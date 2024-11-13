@@ -26,4 +26,13 @@ const nav = NAVS.map((x, i) => ({
   "hover-class": COLOR_HOVER_CLASSES[i],
   extra: "最佳记录：" + getTimerStr(Number(storage.get(`br-${x.count}`))),
 }));
+
+
+onShareAppMessage(() => {
+  console.log('Share App Message')
+})
+
+onShareTimeline(() => {
+  console.log('Share Timeline')
+})
 </script>

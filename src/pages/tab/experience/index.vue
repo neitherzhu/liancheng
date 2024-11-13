@@ -23,4 +23,12 @@ const navs = [
     "hover-class": COLOR_HOVER_CLASSES[1],
   }
 ];
+
+onShareAppMessage(() => {
+  console.log('Share App Message')
+})
+
+onShareTimeline(() => {
+  console.log('Share Timeline')
+})
 </script>

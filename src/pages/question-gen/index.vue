@@ -152,4 +152,12 @@ const handlePreview = (i: number) => {
     urls: images.value
   })
 }
+
+onShareAppMessage(() => {
+  console.log('Share App Message')
+})
+
+onShareTimeline(() => {
+  console.log('Share Timeline')
+})
 </script>

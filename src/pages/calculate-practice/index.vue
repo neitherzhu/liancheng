@@ -97,4 +97,12 @@ const handleStart = () => {
     url: `/pages/calculate-practice/question?maxScore=${maxScore.value}&mixCount=${mixCount.value}&minutes=${minutes.value}&count=${count.value}&type=${useTimer.value ? 'time' : 'count'}`
   })
 };
+
+onShareAppMessage(() => {
+  console.log('Share App Message')
+})
+
+onShareTimeline(() => {
+  console.log('Share Timeline')
+})
 </script>

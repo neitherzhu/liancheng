@@ -123,4 +123,12 @@ onUnload(() => {
   timerRef.value?.stop()
   countDownRef.value?.stop()
 })
+
+onShareAppMessage(() => {
+  console.log('Share App Message')
+})
+
+onShareTimeline(() => {
+  console.log('Share Timeline')
+})
 </script>
