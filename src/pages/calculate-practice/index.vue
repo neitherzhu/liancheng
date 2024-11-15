@@ -1,24 +1,6 @@
 <template>
   <up-toast ref="toastRef"></up-toast>
-  <count-down v-if="ready && !go" :autoStart="true" @onStop="handleCountDownStop" />
-  <view v-if="go" class="fixed top-0 left-0 right-0 bottom-0 bg-white">
-    <view class="text-16 flex items-center w-full h-full justify-center">{{ questions[currentIndex].question }}</view>
-    <view class="absolute left-0 top-0 bottom-0" style="right: 50%" @click="handlePrev"></view>
-    <view class="absolute right-0 top-0 bottom-0" style="left: 50%" @click="handleNext"></view>
-  </view>
-  <view v-if="timeup" class="fixed top-0 left-0 right-0 bottom-0 bg-white">
-    <view class="w-full h-full flex flex-col items-center justify-center" @click="handleRestart">
-      <view v-if="useTimer">恭喜你，<span class="c-blue">{{ minutes }}分钟</span>一共回答了<span class="c-blue">{{
-        questions.length
-          }}</span>题！
-      </view>
-      <view v-else>恭喜你，<span class="c-blue">{{
-        questions.length
-          }}</span>题一共花费了<span class="c-blue">{{ timeStr }}</span>！</view>
-      <view class="text-2 c-gray4 mt-6">点击屏幕继续</view>
-    </view>
-  </view>
-  <view v-if="!ready && !go && !timeup" class="pb-20">
+  <view>
     <up-cell-group>
       <up-cell title="最大得数" :label="`${maxScore}以内`">
         <template #value>
@@ -55,7 +37,6 @@
 </template>
 
 <script setup lang="ts">
-import CountDown from "@/components/count-down/index";
 import { isValidNumber } from "@/utils/biz/math";
 const maxScore = ref(10);
 const mixCount = ref(2);

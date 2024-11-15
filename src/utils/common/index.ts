@@ -28,7 +28,7 @@ export function mpUpdate () {
 }
 
 // 随机打乱一个从1-25的数组
-export function shuffleArray (array: number[]) {
+export function shuffleArray (array: any[]) {
   for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1))
     ;[array[i], array[j]] = [array[j], array[i]]

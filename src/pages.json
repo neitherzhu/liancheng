@@ -40,9 +40,22 @@
       }
     },
     {
+      "path": "pages/pinyin-practice/index",
+      "style": {
+        "navigationBarTitleText": "拼音练习"
+      }
+    },
+    {
+      "path": "pages/pinyin-practice/question",
+      "style": {
+        "navigationBarTitleText": "拼音练习",
+        "pageOrientation": "landscape"
+      }
+    },
+    {
       "path": "pages/game/index",
       "style": {
-        "navigationBarTitleText": ""
+        "navigationBarTitleText": "舒尔特方格"
       }
     }
   ],

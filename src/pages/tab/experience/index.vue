@@ -21,6 +21,12 @@ const navs = [
     url: "/pages/calculate-practice/index",
     class: COLOR_CLASSES[1],
     "hover-class": COLOR_HOVER_CLASSES[1],
+  },
+  {
+    text: "拼音练习",
+    url: "/pages/pinyin-practice/index",
+    class: COLOR_CLASSES[2],
+    "hover-class": COLOR_HOVER_CLASSES[1],
   }
 ];
 
