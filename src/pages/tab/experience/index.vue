@@ -26,7 +26,13 @@ const navs = [
     text: "拼音练习",
     url: "/pages/pinyin-practice/index",
     class: COLOR_CLASSES[2],
-    "hover-class": COLOR_HOVER_CLASSES[1],
+    "hover-class": COLOR_HOVER_CLASSES[2],
+  },
+  {
+    text: "认字练习",
+    url: "/pages/hanzi-practice/index",
+    class: COLOR_CLASSES[3],
+    "hover-class": COLOR_HOVER_CLASSES[3],
   }
 ];
 

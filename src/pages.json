@@ -53,6 +53,19 @@
       }
     },
     {
+      "path": "pages/hanzi-practice/index",
+      "style": {
+        "navigationBarTitleText": "认字练习"
+      }
+    },
+    {
+      "path": "pages/hanzi-practice/question",
+      "style": {
+        "navigationBarTitleText": "认字练习",
+        "pageOrientation": "landscape"
+      }
+    },
+    {
       "path": "pages/game/index",
       "style": {
         "navigationBarTitleText": "舒尔特方格"

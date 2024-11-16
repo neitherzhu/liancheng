@@ -41,8 +41,7 @@ export const genrateRandomPinyinQuestions = ({
     } else if (tpy && r < 1) {
       q = genrateRandomTruplePinyinAnswer()
     }
-
-    if (!m[q]) {
+    if (q && !m[q]) {
       m[q] = true
       questions.push(q)
     }
