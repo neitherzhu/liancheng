@@ -9,15 +9,15 @@
   },
   "pages": [
     {
-      "path": "pages/tab/home/index",
-      "style": {
-        "navigationBarTitleText": "专注力"
-      }
-    },
-    {
       "path": "pages/tab/experience/index",
       "style": {
         "navigationBarTitleText": "练习"
+      }
+    },
+    {
+      "path": "pages/tab/home/index",
+      "style": {
+        "navigationBarTitleText": "专注力"
       }
     },
     {
@@ -99,12 +99,12 @@
     "backgroundColor": "#ffffff",
     "list": [
       {
-        "pagePath": "pages/tab/home/index",
-        "text": "专注力"
-      },
-      {
         "pagePath": "pages/tab/experience/index",
         "text": "练习"
+      },
+      {
+        "pagePath": "pages/tab/home/index",
+        "text": "专注力"
       }
       // {
       //   "pagePath": "pages/tab/user/index",

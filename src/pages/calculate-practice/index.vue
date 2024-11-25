@@ -17,7 +17,7 @@
           <up-switch v-model="useTimer" />
         </template>
       </up-cell>
-      <up-cell title="计时时间" v-if="useTimer">
+      <up-cell title="计时时间" v-if="useTimer" label="分钟">
         <template #value>
           <up-input v-model="minutes" type="number" :border="false" inputAlign="right" />
         </template>
