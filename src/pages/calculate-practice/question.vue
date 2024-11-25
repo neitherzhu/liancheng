@@ -49,9 +49,8 @@ const genOneByOne = () => {
   const [q] = genrateRandomMathQuestions({
     maxScore: maxScore.value,
     count: 1,
-    upset: false,
     mixCount: mixCount.value,
-    normal: true,
+    type: 1
   });
   questions.value.push(q);
   count.value += 1;
@@ -62,9 +61,8 @@ const genAll = () => {
   questions.value = genrateRandomMathQuestions({
     maxScore: maxScore.value,
     count: count.value,
-    upset: false,
     mixCount: mixCount.value,
-    normal: true,
+    type: 1
   });
 
   currentIndex.value += 1;

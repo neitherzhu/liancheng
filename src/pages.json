@@ -9,15 +9,15 @@
   },
   "pages": [
     {
-      "path": "pages/tab/home/index",
-      "style": {
-        "navigationBarTitleText": "专注力"
-      }
-    },
-    {
       "path": "pages/tab/experience/index",
       "style": {
         "navigationBarTitleText": "练习"
+      }
+    },
+    {
+      "path": "pages/tab/home/index",
+      "style": {
+        "navigationBarTitleText": "专注力"
       }
     },
     {
@@ -40,13 +40,13 @@
       }
     },
     {
-      "path": "pages/pinyin-practice/index",
+      "path": "pages/base-pinyin-practice/index",
       "style": {
         "navigationBarTitleText": "拼音练习"
       }
     },
     {
-      "path": "pages/pinyin-practice/question",
+      "path": "pages/base-pinyin-practice/question",
       "style": {
         "navigationBarTitleText": "拼音练习",
         "pageOrientation": "landscape"
@@ -72,20 +72,26 @@
       }
     }
   ],
-  // "subPackages": [
-  //   {
-  //     "root": "pages/common",
-  //     "pages": [
-  //       // {
-  //       //   "path": "login/index",
-  //       //   "navigationStyle": "custom"
-  //       // },
-  //       // {
-  //       //   "path": "webview/index"
-  //       // }
-  //     ]
-  //   }
-  // ],
+  "subPackages": [
+    {
+      "root": "pages/words-pinyin-practice",
+      "pages": [
+        {
+          "path": "index",
+          "style": {
+            "navigationBarTitleText": "拼音词组联系"
+          }
+        },
+        {
+          "path": "question",
+          "style": {
+            "navigationBarTitleText": "拼音词组联系",
+            "pageOrientation": "landscape"
+          }
+        }
+      ]
+    }
+  ],
   // "preloadRule": {
   //   "pages/tab/home/index": {
   //     "network": "all",
@@ -99,12 +105,12 @@
     "backgroundColor": "#ffffff",
     "list": [
       {
-        "pagePath": "pages/tab/home/index",
-        "text": "专注力"
-      },
-      {
         "pagePath": "pages/tab/experience/index",
         "text": "练习"
+      },
+      {
+        "pagePath": "pages/tab/home/index",
+        "text": "专注力"
       }
       // {
       //   "pagePath": "pages/tab/user/index",

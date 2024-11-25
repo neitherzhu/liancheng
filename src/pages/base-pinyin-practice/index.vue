@@ -28,7 +28,7 @@
       </up-cell>
       <up-cell title="题目数量">
         <template #value>
-          <up-input v-model="count" type="number" :border="false" inputAlign="right" />
+          <up-input v-model="count" type="number" :border="false" input-align="right" />
         </template>
       </up-cell>
     </up-cell-group>
@@ -50,15 +50,15 @@ const count = ref(30);
 
 const handleStart = () => {
   uni.navigateTo({
-    url: `/pages/pinyin-practice/question?ym=${ym.value}&sm=${sm.value}&zt=${zt.value}&dpy=${dpy.value}&tpy=${tpy.value}&count=${count.value}`
-  })
+    url: `/pages/base-pinyin-practice/question?ym=${ym.value}&sm=${sm.value}&zt=${zt.value}&dpy=${dpy.value}&tpy=${tpy.value}&count=${count.value}`,
+  });
 };
 
 onShareAppMessage(() => {
-  console.log('Share App Message')
-})
+  console.log('Share App Message');
+});
 
 onShareTimeline(() => {
-  console.log('Share Timeline')
-})
+  console.log('Share Timeline');
+});
 </script>
