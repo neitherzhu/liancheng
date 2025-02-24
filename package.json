@@ -56,7 +56,7 @@
     "pinia-plugin-persistedstate": "^4.1.1",
     "pinyin-pro": "^3.26.0",
     "uview-plus": "^3.3.36",
-    "vue": "3.4.21",
+    "vue": "3.5.13",
     "z-paging": "^2.7.12"
   },
   "devDependencies": {
