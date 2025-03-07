@@ -152,7 +152,8 @@ const gen = () => {
   let questionData = questions.value.shift();
 
   while (questionData) {
-    const questionWidth = 2479 / 4;
+    const splitCount = questionData.mixCount === 3 ? 3 : questionData.mixCount > 3 ? 2 : 4;
+    const questionWidth = 2479 / splitCount;
     const questionHeight = 135;
     const titleHeight = 110;
 
@@ -177,13 +178,13 @@ const gen = () => {
       }
     }
 
-    const lists = chunk(questionData.list, 4);
+    const lists = chunk(questionData.list, splitCount);
     let item = lists.shift();
 
     while (!isBreak && item) {
       item.forEach((y: Question, i: number) => {
         questionData!.list.shift();
-        const left = (i % 4) * questionWidth + 80;
+        const left = (i % splitCount) * questionWidth + 80;
         const top = totalHeight + questionHeight;
         views.push({
           type: 'text',
@@ -225,6 +226,7 @@ const gen = () => {
 // 开始生成题目前的校验
 const handleGen = () => {
   let errorText = '';
+  storage.set('maxScore', String(maxScore.value));
   storage.set('question-gen-cache', JSON.stringify(groups.value));
   const isError = groups.value.some((x: DefaultGenData) => {
     if (!isValidNumber(maxScore.value)) {
@@ -256,7 +258,7 @@ const handleGen = () => {
       mixCount: x.mixCount,
       type: x.type,
     });
-    return { title, list };
+    return { title, list, mixCount: Number(x.mixCount) };
   });
   // 渲染题目
   gen();
@@ -303,10 +305,15 @@ const handlePreview = (i: number) => {
 onMounted(() => {
   try {
     let v = storage.get('question-gen-cache');
+    const s = storage.get('maxScore');
 
     if (v) {
       v = JSON.parse(v);
       groups.value = v;
+    }
+
+    if (s) {
+      maxScore.value = Number(s);
     }
   }
   catch (e) { console.log(e); }
