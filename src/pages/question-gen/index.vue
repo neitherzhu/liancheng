@@ -112,6 +112,7 @@ const groupTargetIndex = ref(0);
 const columns = reactive<ColumnsData[][]>([
   [
     { label: '1+1=', value: 1, title: '加减运算' },
+    { label: '1x2=', value: 8, title: '乘法运算' },
     { label: '( )+1=2', value: 2, title: '括号运算' },
     { label: '1+( )=2', value: 3, title: '括号运算' },
     { label: '1○1=2', value: 4, title: '填写合适的+、-' },

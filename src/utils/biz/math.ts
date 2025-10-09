@@ -11,7 +11,8 @@ export type Question = {
 // { label: '1○1=2○0', value: 5 },
 // { label: '最小能填几', value: 6 },
 // { label: '最大能填几', value: 7 },
-export type QuestionType = 1 | 2 | 3 | 4 | 5 | 6 | 7
+//  { label: '1x2', value: 8 },
+export type QuestionType = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8
 
 const getValidateFormula = ({
   maxScore,
@@ -114,25 +115,31 @@ export const genrateRandomMathQuestions = ({
     })
 
     let q = ''
-    const params = { numbers, operators, answer, maxScore }
-    if (type === 1) {
-      q = genrateNormalQuestion(params)
-    } else if (type === 2) {
-      q = genrateLeftBracketsQuestion(params)
-      answer = numbers[0]
-    } else if (type === 3) {
-      q = genrateRightBracketsQuestion(params)
-      answer = numbers[numbers.length - 1]
-    } else if (type === 4) {
-      q = genrateLeftCirckeQuestion(params)
-      answer = operators[0]
-    } else if (type === 5) {
-      q = genrateBothCirckeQuestion(params)
-      answer = operators[0]
-    } else if (type === 6) {
-      q = genrateMinQuestion(params)
-    } else if (type === 7) {
-      q = genrateMaxQuestion(params)
+
+    if (type === 8) {
+      // 乘法运算
+      q = genrateMultiQuestion()
+    } else {
+      const params = { numbers, operators, answer, maxScore }
+      if (type === 1) {
+        q = genrateNormalQuestion(params)
+      } else if (type === 2) {
+        q = genrateLeftBracketsQuestion(params)
+        answer = numbers[0]
+      } else if (type === 3) {
+        q = genrateRightBracketsQuestion(params)
+        answer = numbers[numbers.length - 1]
+      } else if (type === 4) {
+        q = genrateLeftCirckeQuestion(params)
+        answer = operators[0]
+      } else if (type === 5) {
+        q = genrateBothCirckeQuestion(params)
+        answer = operators[0]
+      } else if (type === 6) {
+        q = genrateMinQuestion(params)
+      } else if (type === 7) {
+        q = genrateMaxQuestion(params)
+      }
     }
 
     const question = {
@@ -307,6 +314,15 @@ const genrateMaxQuestion = ({
   } else if (operators[0] === '-') {
     str = `${numbers[0]} -  ○ > ${answer}`
   }
+  return str
+}
+
+const genrateMultiQuestion = (): string => {
+  let str = ''
+  //  随机生成1-9的乘法运算
+  const num1 = Math.floor(Math.random() * 9) + 1
+  const num2 = Math.floor(Math.random() * 9) + 1
+  str = `${num1} x ${num2} =   `
   return str
 }
 

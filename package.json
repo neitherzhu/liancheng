@@ -107,11 +107,9 @@
     "vue-tsc": "^2.1.6"
   },
   "simple-git-hooks": {
-    "pre-commit": "npx lint-staged",
     "commit-msg": "node scripts/verifyCommit.js"
   },
   "lint-staged": {
-    "src/**/*.{js,jsx,ts,tsx}": "eslint --fix",
     "*.{scss,less,style,html}": "stylelint --fix",
     "*.vue": [
       "eslint --fix",
