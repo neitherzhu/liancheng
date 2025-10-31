@@ -57,7 +57,7 @@
     "pinyin-pro": "^3.26.0",
     "uview-plus": "^3.3.36",
     "vue": "3.4.21",
-    "z-paging": "^2.7.12"
+    "z-paging": "^2.8.8"
   },
   "devDependencies": {
     "@antfu/eslint-config": "3.7.3",
