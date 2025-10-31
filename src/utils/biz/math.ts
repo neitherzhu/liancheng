@@ -1,7 +1,8 @@
-export type Question = {
-  id: number
-  question: string
-  answer: number | string
+export interface Question {
+  id: number;
+  question: string;
+  answer: number | string;
+  mixCount?: number;
 }
 
 // { label: '1+1=', value: 1 },
@@ -12,321 +13,357 @@ export type Question = {
 // { label: '最小能填几', value: 6 },
 // { label: '最大能填几', value: 7 },
 //  { label: '1x2', value: 8 },
-export type QuestionType = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8
+//  { label: '81/9', value: 9 },
+export type QuestionType = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
 
 const getValidateFormula = ({
   maxScore,
-  mixCount
+  mixCount,
 }: {
-  maxScore: number
-  mixCount: number
+  maxScore: number;
+  mixCount: number;
 }): { numbers: number[]; operators: string[]; answer: number | string } => {
-  const num1 = Math.floor(Math.random() * maxScore) + 1
-  let numbers = [num1]
-  let operators = []
-  let i = 1
-  let answer: string | number = num1
+  const num1 = Math.floor(Math.random() * maxScore) + 1;
+  const numbers = [num1];
+  const operators = [];
+  let i = 1;
+  let answer: string | number = num1;
 
   while (i < mixCount) {
-    const num = Math.floor(Math.random() * maxScore) + 1
-    const operator = Math.random() < 0.5 ? '+' : '-'
-    const r = getAnswer(operator, answer, num, maxScore)
+    const num = Math.floor(Math.random() * maxScore) + 1;
+    const operator = Math.random() < 0.5 ? '+' : '-';
+    const r = getAnswer(operator, answer, num, maxScore);
 
-    if (!r.valid) continue
+    if (!r.valid) continue;
 
-    numbers.push(num)
-    operators.push(operator)
-    answer = r.answer
-    i++
+    numbers.push(num);
+    operators.push(operator);
+    answer = r.answer;
+    i++;
   }
 
-  return { numbers, operators, answer }
-}
+  return { numbers, operators, answer };
+};
 
 const getFormulaByAnswer = ({
   maxScore,
-  answer
+  answer,
 }: {
-  maxScore: number
-  answer: number
+  maxScore: number;
+  answer: number;
 }): { numbers: number[]; operators: string[] } => {
   while (true) {
-    let numbers = []
-    let operators = []
-    const num1 = Math.floor(Math.random() * maxScore) + 1
-    let operator = ''
-    let num2
+    let numbers = [];
+    let operators = [];
+    const num1 = Math.floor(Math.random() * maxScore) + 1;
+    let operator = '';
+    let num2;
     if (answer > num1) {
-      operator = '+'
-      num2 = answer - num1
-    } else {
-      operator = '-'
-      num2 = num1 - answer
+      operator = '+';
+      num2 = answer - num1;
+    }
+    else {
+      operator = '-';
+      num2 = num1 - answer;
     }
 
-    const r = getAnswer(operator, num1, num2, maxScore)
+    const r = getAnswer(operator, num1, num2, maxScore);
 
     if (r.valid) {
-      numbers = [num1, num2]
-      operators = [operator]
-      return { numbers, operators }
+      numbers = [num1, num2];
+      operators = [operator];
+      return { numbers, operators };
     }
   }
-}
+};
 
 const genrateCircle = ({
   numbers,
-  operators
+  operators,
 }: {
-  numbers: number[]
-  operators: string[]
+  numbers: number[];
+  operators: string[];
 }) => {
-  let str = ''
+  let str = '';
   numbers.forEach((num, i) => {
     if (i === 0) {
-      str += `${num} ○ `
-    } else if (i === numbers.length - 1) {
-      str += `${num}`
-    } else {
-      str += `${num} ${operators[i]} `
+      str += `${num} ○ `;
     }
-  })
+    else if (i === numbers.length - 1) {
+      str += `${num}`;
+    }
+    else {
+      str += `${num} ${operators[i]} `;
+    }
+  });
 
-  return str
-}
+  return str;
+};
 
 export const genrateRandomMathQuestions = ({
   maxScore, // 最大结果
   count = 100, // 生成数量
   mixCount = 2, // 混合数量
-  type = 1 // 题型
+  type = 1, // 题型
 }: {
-  maxScore: number
-  count?: number
-  mixCount?: number
-  type?: QuestionType
+  maxScore: number;
+  count?: number;
+  mixCount?: number;
+  type?: QuestionType;
 }): Question[] => {
-  const questions = []
-  let c = 0
+  const questions = [];
+  let c = 0;
   while (c < count) {
     let { numbers, operators, answer } = getValidateFormula({
       maxScore,
-      mixCount
-    })
+      mixCount,
+    });
 
-    let q = ''
+    let q = '';
 
     if (type === 8) {
       // 乘法运算
-      q = genrateMultiQuestion()
-    } else {
-      const params = { numbers, operators, answer, maxScore }
+      q = genrateMultiQuestion();
+    }
+    else if (type === 9) {
+      // 除法运算
+      q = genrateDivisionQuestion();
+    }
+    else {
+      const params = { numbers, operators, answer, maxScore };
       if (type === 1) {
-        q = genrateNormalQuestion(params)
-      } else if (type === 2) {
-        q = genrateLeftBracketsQuestion(params)
-        answer = numbers[0]
-      } else if (type === 3) {
-        q = genrateRightBracketsQuestion(params)
-        answer = numbers[numbers.length - 1]
-      } else if (type === 4) {
-        q = genrateLeftCirckeQuestion(params)
-        answer = operators[0]
-      } else if (type === 5) {
-        q = genrateBothCirckeQuestion(params)
-        answer = operators[0]
-      } else if (type === 6) {
-        q = genrateMinQuestion(params)
-      } else if (type === 7) {
-        q = genrateMaxQuestion(params)
+        q = genrateNormalQuestion(params);
+      }
+      else if (type === 2) {
+        q = genrateLeftBracketsQuestion(params);
+        answer = numbers[0];
+      }
+      else if (type === 3) {
+        q = genrateRightBracketsQuestion(params);
+        answer = numbers[numbers.length - 1];
+      }
+      else if (type === 4) {
+        q = genrateLeftCirckeQuestion(params);
+        answer = operators[0];
+      }
+      else if (type === 5) {
+        q = genrateBothCirckeQuestion(params);
+        answer = operators[0];
+      }
+      else if (type === 6) {
+        q = genrateMinQuestion(params);
+      }
+      else if (type === 7) {
+        q = genrateMaxQuestion(params);
       }
     }
 
     const question = {
       id: c + 1,
       question: q,
-      answer
-    }
-    questions.push(question)
+      answer,
+    };
+    questions.push(question);
 
-    c++
+    c++;
   }
 
-  return questions
-}
+  return questions;
+};
 
 const getAnswer = (
   operator: string,
   num1: number,
   num2: number,
-  maxScore: number
+  maxScore: number,
 ): { valid: boolean; answer: number } => {
   const result = {
     valid: true,
-    answer: 0
-  }
+    answer: 0,
+  };
   // 排除小数减大数
   if (operator === '-' && num1 < num2) {
-    result.valid = false
-    return result
+    result.valid = false;
+    return result;
   }
 
   if (operator === '-') {
-    result.answer = num1 - num2
-  } else if (operator === '+') {
-    result.answer = num1 + num2
-  } else {
-    result.valid = false
-    return result
+    result.answer = num1 - num2;
+  }
+  else if (operator === '+') {
+    result.answer = num1 + num2;
+  }
+  else {
+    result.valid = false;
+    return result;
   }
 
   // 排除计算结果大于maxScore
   if (result.answer > maxScore) {
-    result.valid = false
-    return result
-  } else if (result.answer < 0) {
-    result.valid = false
-    return result
+    result.valid = false;
+    return result;
+  }
+  else if (result.answer < 0) {
+    result.valid = false;
+    return result;
   }
 
-  return result
-}
+  return result;
+};
 
-type GenrateQuestionParam = {
-  numbers: number[]
-  operators: string[]
-  answer: number | string
-  maxScore: number
+interface GenrateQuestionParam {
+  numbers: number[];
+  operators: string[];
+  answer: number | string;
+  maxScore: number;
 }
 const genrateNormalQuestion = ({
   numbers,
-  operators
+  operators,
 }: GenrateQuestionParam): string => {
-  let str = ''
+  let str = '';
 
   numbers.forEach((num, i) => {
     // 最后一个
     if (i === numbers.length - 1) {
-      str += `${num} =   `
-    } else {
-      str += `${num} ${operators[i]} `
+      str += `${num} =   `;
     }
-  })
-  return str
-}
+    else {
+      str += `${num} ${operators[i]} `;
+    }
+  });
+  return str;
+};
 
 const genrateLeftBracketsQuestion = ({
   numbers,
   operators,
-  answer
+  answer,
 }: GenrateQuestionParam): string => {
-  let str = ''
+  let str = '';
 
   numbers.forEach((num, i) => {
     if (i === 0) {
-      str += `(  ) ${operators[i]} `
-    } else if (i === numbers.length - 1) {
-      str += `${num} = ${answer}`
-    } else {
-      str += `${num} ${operators[i]} `
+      str += `(  ) ${operators[i]} `;
     }
-  })
-  return str
-}
+    else if (i === numbers.length - 1) {
+      str += `${num} = ${answer}`;
+    }
+    else {
+      str += `${num} ${operators[i]} `;
+    }
+  });
+  return str;
+};
 
 const genrateRightBracketsQuestion = ({
   numbers,
   operators,
-  answer
+  answer,
 }: GenrateQuestionParam): string => {
-  let str = ''
+  let str = '';
 
   numbers.forEach((num, i) => {
     if (i === numbers.length - 1) {
-      str += `(  ) = ${answer}`
-    } else {
-      str += `${num} ${operators[i]} `
+      str += `(  ) = ${answer}`;
     }
-  })
-  return str
-}
+    else {
+      str += `${num} ${operators[i]} `;
+    }
+  });
+  return str;
+};
 
 const genrateLeftCirckeQuestion = ({
   numbers,
   operators,
-  answer
+  answer,
 }: GenrateQuestionParam): string => {
-  let str = ''
+  let str = '';
 
   numbers.forEach((num, i) => {
     if (i === 0) {
-      str += `${num} ○ `
-    } else if (i === numbers.length - 1) {
-      str += `${num} = ${answer}`
-    } else {
-      str += `${num} ${operators[i]} `
+      str += `${num} ○ `;
     }
-  })
-  return str
-}
+    else if (i === numbers.length - 1) {
+      str += `${num} = ${answer}`;
+    }
+    else {
+      str += `${num} ${operators[i]} `;
+    }
+  });
+  return str;
+};
 
 const genrateBothCirckeQuestion = ({
   numbers,
   operators,
   answer,
-  maxScore
+  maxScore,
 }: GenrateQuestionParam): string => {
-  const { numbers: rightNumbers, operators: rightOperators } =
-    getFormulaByAnswer({ maxScore, answer: answer as number })
-  let left = genrateCircle({ numbers, operators })
-  let right = genrateCircle({
+  const { numbers: rightNumbers, operators: rightOperators }
+    = getFormulaByAnswer({ maxScore, answer: answer as number });
+  const left = genrateCircle({ numbers, operators });
+  const right = genrateCircle({
     numbers: rightNumbers,
-    operators: rightOperators
-  })
+    operators: rightOperators,
+  });
 
-  return left + ' = ' + right
-}
+  return `${left} = ${right}`;
+};
 
 const genrateMinQuestion = ({
   numbers,
   operators,
-  answer
+  answer,
 }: GenrateQuestionParam): string => {
-  let str = ''
+  let str = '';
 
   if (operators[0] === '+') {
-    str = `${numbers[0]} + ○ > ${answer}`
-  } else if (operators[0] === '-') {
-    str = `${numbers[0]} -  ○ < ${answer}`
+    str = `${numbers[0]} + ○ > ${answer}`;
   }
-  return str
-}
+  else if (operators[0] === '-') {
+    str = `${numbers[0]} -  ○ < ${answer}`;
+  }
+  return str;
+};
 
 const genrateMaxQuestion = ({
   numbers,
   operators,
-  answer
+  answer,
 }: GenrateQuestionParam): string => {
-  let str = ''
+  let str = '';
 
   if (operators[0] === '+') {
-    str = `${numbers[0]} + ○ < ${answer}`
-  } else if (operators[0] === '-') {
-    str = `${numbers[0]} -  ○ > ${answer}`
+    str = `${numbers[0]} + ○ < ${answer}`;
   }
-  return str
-}
+  else if (operators[0] === '-') {
+    str = `${numbers[0]} -  ○ > ${answer}`;
+  }
+  return str;
+};
 
 const genrateMultiQuestion = (): string => {
-  let str = ''
+  let str = '';
   //  随机生成1-9的乘法运算
-  const num1 = Math.floor(Math.random() * 9) + 1
-  const num2 = Math.floor(Math.random() * 9) + 1
-  str = `${num1} x ${num2} =   `
-  return str
-}
+  const num1 = Math.floor(Math.random() * 9) + 1;
+  const num2 = Math.floor(Math.random() * 9) + 1;
+  str = `${num1} x ${num2} =   `;
+  return str;
+};
+
+const genrateDivisionQuestion = (): string => {
+  let str = '';
+  // 随机生成1-9的除法运算，确保结果为整数
+  const divisor = Math.floor(Math.random() * 9) + 1; // 除数
+  const quotient = Math.floor(Math.random() * 9) + 1; // 商
+  const dividend = divisor * quotient; // 被除数
+  str = `${dividend} ÷ ${divisor} =   `;
+  return str;
+};
 
 export const isValidNumber = (n: string | number) => {
-  const num = Number(n)
-  return num && !isNaN(num)
-}
+  const num = Number(n);
+  return num && !Number.isNaN(num);
+};

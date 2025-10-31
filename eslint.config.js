@@ -28,6 +28,8 @@ export default antfu(
       }
     },
     rules: {
+      'no-use-before-define': 'off',
+      '@typescript-eslint/no-use-before-define': ['off'],
       // 需要尾随逗号
       'comma-dangle': ['error', 'only-multiline'],
       // 允许console

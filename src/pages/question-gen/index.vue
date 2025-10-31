@@ -33,7 +33,7 @@
               <text>{{ columns[0].find(c => c.value === x.type)?.label }}</text>
             </template>
           </up-cell>
-          <up-cell title="运算位数">
+          <up-cell v-if="![8, 9].includes(x.type)" title="运算位数">
             <template #value>
               <up-input v-model="x.mixCount" type="number" :border="false" input-align="right" />
             </template>
@@ -92,6 +92,7 @@ interface ColumnsData {
 interface QuestionData {
   title: string;
   list: Question[];
+  mixCount?: number;
 };
 
 const defaultGenData: DefaultGenData = {
@@ -109,10 +110,12 @@ const questions = ref<QuestionData[]>([]);
 const pageIndex = ref(0);
 const showPicker = ref(false);
 const groupTargetIndex = ref(0);
+const renderedPageIndex = ref(0);
 const columns = reactive<ColumnsData[][]>([
   [
     { label: '1+1=', value: 1, title: '加减运算' },
     { label: '1x2=', value: 8, title: '乘法运算' },
+    { label: '2÷2=', value: 9, title: '除法运算' },
     { label: '( )+1=2', value: 2, title: '括号运算' },
     { label: '1+( )=2', value: 3, title: '括号运算' },
     { label: '1○1=2', value: 4, title: '填写合适的+、-' },
@@ -147,74 +150,36 @@ const handleCloseGroup = (i: number) => {
 // 开始生成题目
 const gen = () => {
   const views: any = [];
-  let totalHeight = 0;
+  const vSplitCount = 25; // 每页纵向题目数量
+  const titleHeight = 80;
+  const questionHeight = (3508 - titleHeight) / vSplitCount;
 
-  let isBreak = false;
-  let questionData = questions.value.shift();
+  const lists = questions.value.map(x => x.list.map((y: Question) => ({ ...y, mixCount: x.mixCount }))).flat();
 
-  while (questionData) {
-    const splitCount = questionData.mixCount === 3 ? 3 : questionData.mixCount > 3 ? 2 : 4;
-    const questionWidth = 2479 / splitCount;
-    const questionHeight = 135;
-    const titleHeight = 110;
+  // 100题一页
+  const chunkedLists = chunk(lists, 100);
+  const currentList = chunkedLists[renderedPageIndex.value];
 
-    if (questionData.title) {
-      views.push({
-        type: 'text',
-        text: questionData.title,
-        css: {
-          left: '80px',
-          top: `${totalHeight + 20}px`,
-          width: '2079px',
-          textAlign: 'left',
-          fontSize: '80px',
-        },
-      });
-      totalHeight += titleHeight - questionHeight;
-      questionData.title = '';
-
-      if (totalHeight + questionHeight >= 3508) {
-        questions.value.unshift(questionData);
-        break;
-      }
-    }
-
-    const lists = chunk(questionData.list, splitCount);
-    let item = lists.shift();
-
-    while (!isBreak && item) {
-      item.forEach((y: Question, i: number) => {
-        questionData!.list.shift();
-        const left = (i % splitCount) * questionWidth + 80;
-        const top = totalHeight + questionHeight;
-        views.push({
-          type: 'text',
-          text: y.question,
-          css: {
-            left: `${left}px`,
-            top: `${top}px`,
-            fontSize: '90px',
-          },
-        });
-      });
-      totalHeight += questionHeight;
-      const hasNextQuestion = !!questionData.list.length;
-      if (totalHeight + (hasNextQuestion ? questionHeight * 2 : titleHeight) >= 3508) {
-        isBreak = true;
-        questions.value.unshift(questionData);
-      }
-      else {
-        item = lists.shift();
-      }
-    }
-
-    if (isBreak) {
-      break;
-    }
-
-    totalHeight += questionHeight;
-    questionData = questions.value.shift();
+  if (!currentList) {
+    renderedPageIndex.value = 0;
+    return;
   }
+  currentList.forEach((x: Question, i: number) => {
+    const left = Math.floor(i / vSplitCount) * (2479 / 4) + 80;
+    const top = titleHeight + (i % vSplitCount) * questionHeight;
+    const fontSize = x.mixCount && x.mixCount === 2 ? 90 : x.mixCount === 3 ? 70 : 50;
+    views.push({
+      type: 'text',
+      text: x.question,
+      css: {
+        left: `${left}px`,
+        top: `${top}px`,
+        fontSize: `${fontSize}px`,
+      },
+    });
+  });
+
+  renderedPageIndex.value += 1;
 
   paintPallette.value = {
     width: '2479px',
