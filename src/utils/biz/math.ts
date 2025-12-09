@@ -111,7 +111,7 @@ export const genrateRandomMathQuestions = ({
   mixCount?: number;
   type?: QuestionType;
 }): Question[] => {
-  const questions = [];
+  const questions: Question[] = [];
   let c = 0;
   while (c < count) {
     let { numbers, operators, answer } = getValidateFormula({
@@ -158,6 +158,9 @@ export const genrateRandomMathQuestions = ({
       }
     }
 
+    if (questions.find(x => x.question === q)) {
+      continue;
+    }
     const question = {
       id: c + 1,
       question: q,
@@ -346,18 +349,18 @@ const genrateMaxQuestion = ({
 
 const genrateMultiQuestion = (): string => {
   let str = '';
-  //  随机生成1-9的乘法运算
-  const num1 = Math.floor(Math.random() * 9) + 1;
-  const num2 = Math.floor(Math.random() * 9) + 1;
+  //  随机生成3-9的乘法运算
+  const num1 = Math.floor(Math.random() * 7) + 3;
+  const num2 = Math.floor(Math.random() * 7) + 3;
   str = `${num1} x ${num2} =   `;
   return str;
 };
 
 const genrateDivisionQuestion = (): string => {
   let str = '';
-  // 随机生成1-9的除法运算，确保结果为整数
-  const divisor = Math.floor(Math.random() * 9) + 1; // 除数
-  const quotient = Math.floor(Math.random() * 9) + 1; // 商
+  // 随机生成3-9的除法运算，确保结果为整数
+  const divisor = Math.floor(Math.random() * 7) + 3; // 除数
+  const quotient = Math.floor(Math.random() * 7) + 3; // 商
   const dividend = divisor * quotient; // 被除数
   str = `${dividend} ÷ ${divisor} =   `;
   return str;
