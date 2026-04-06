@@ -3,6 +3,7 @@ export interface Question {
   question: string;
   answer: number | string;
   mixCount?: number;
+  isInteger?: boolean;
 }
 
 // { label: '1+1=', value: 1 },
@@ -19,12 +20,14 @@ export type QuestionType = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
 const getValidateFormula = ({
   maxScore,
   mixCount,
+  isInteger,
 }: {
   maxScore: number;
   mixCount: number;
+  isInteger: boolean;
 }): { numbers: number[]; operators: string[]; answer: number | string } => {
   const num1 = Math.floor(Math.random() * maxScore) + 1;
-  const numbers = [num1];
+  let numbers = [num1];
   const operators = [];
   let i = 1;
   let answer: string | number = num1;
@@ -40,6 +43,13 @@ const getValidateFormula = ({
     operators.push(operator);
     answer = r.answer;
     i++;
+  }
+
+  if (isInteger) {
+    const count = 10 ** (Math.floor(Math.random() * 2) + 1);
+    // 给数字后面随机增加1到2位的0，增加难度
+    numbers = numbers.map(num => num * count);
+    answer = (answer as number) * count;
   }
 
   return { numbers, operators, answer };
@@ -105,11 +115,13 @@ export const genrateRandomMathQuestions = ({
   count = 100, // 生成数量
   mixCount = 2, // 混合数量
   type = 1, // 题型
+  isInteger = false, // 是否整数题
 }: {
   maxScore: number;
   count?: number;
   mixCount?: number;
   type?: QuestionType;
+  isInteger?: boolean;
 }): Question[] => {
   const questions: Question[] = [];
   let c = 0;
@@ -117,6 +129,7 @@ export const genrateRandomMathQuestions = ({
     let { numbers, operators, answer } = getValidateFormula({
       maxScore,
       mixCount,
+      isInteger,
     });
 
     let q = '';
@@ -165,6 +178,7 @@ export const genrateRandomMathQuestions = ({
       id: c + 1,
       question: q,
       answer,
+      isInteger,
     };
     questions.push(question);
 

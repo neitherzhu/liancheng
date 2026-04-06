@@ -4,7 +4,11 @@
     <painter :palette="paintPallette" width-pixels="2479" @img-o-k="onImgOK" />
     <view v-if="images.length" class="mt-20 flex items-center justify-center">
       <image
-        v-for="(image, i) in images" :key="i" class="mx-1" :src="image" mode="aspectFit"
+        v-for="(image, i) in images"
+        :key="i"
+        class="mx-1"
+        :src="image"
+        mode="aspectFit"
         @click="handlePreview(i)"
       />
     </view>
@@ -12,7 +16,12 @@
       <view v-if="!images.length">
         <up-cell title="最大得数" :label="`${maxScore}以内`" :border="false">
           <template #value>
-            <up-input v-model="maxScore" type="number" :border="false" input-align="right" />
+            <up-input
+              v-model="maxScore"
+              type="number"
+              :border="false"
+              input-align="right"
+            />
           </template>
         </up-cell>
         <up-cell-group v-for="(x, i) in groups" :key="x" class="text-10">
@@ -30,36 +39,68 @@
           </up-cell>
           <up-cell title="题型" :is-link="true" @click="handleOpenPicker(i)">
             <template #value>
-              <text>{{ columns[0].find(c => c.value === x.type)?.label }}</text>
+              <text>
+                {{ columns[0].find((c) => c.value === x.type)?.label }}
+              </text>
             </template>
           </up-cell>
           <up-cell v-if="![8, 9].includes(x.type)" title="运算位数">
             <template #value>
-              <up-input v-model="x.mixCount" type="number" :border="false" input-align="right" />
+              <up-input
+                v-model="x.mixCount"
+                type="number"
+                :border="false"
+                input-align="right"
+              />
+            </template>
+          </up-cell>
+          <up-cell v-if="x.type === 1" title="整数题">
+            <template #value>
+              <up-switch v-model="x.isInteger" />
             </template>
           </up-cell>
           <up-cell title="题目数量">
             <template #value>
-              <up-input v-model="x.count" type="number" :border="false" input-align="right" />
+              <up-input
+                v-model="x.count"
+                type="number"
+                :border="false"
+                input-align="right"
+              />
             </template>
           </up-cell>
         </up-cell-group>
-        <up-button v-if="groups.length < 7" size="large" class="my-2" @click="handleAddGroup">
-          <up-icon name="plus" size="14" style="width:20px;height:20px" />
+        <up-button
+          v-if="groups.length < 7"
+          size="large"
+          class="my-2"
+          @click="handleAddGroup"
+        >
+          <up-icon name="plus" size="14" style="width: 20px; height: 20px" />
           <text class="ml-1">
             添加题目生成条件
           </text>
         </up-button>
       </view>
       <view class="mx-10 mt-10">
-        <up-button v-if="!images.length" type="primary" size="large" @click="handleGen">
+        <up-button
+          v-if="!images.length"
+          type="primary"
+          size="large"
+          @click="handleGen"
+        >
           开始生成
         </up-button>
         <template v-else>
           <up-button type="primary" size="large" @click="handleRegen">
             重新生成
           </up-button>
-          <up-button type="success" size="large" class="mt-5" @click="handleSave">
+          <up-button
+            type="success"
+            size="large"
+            class="mt-5"
+            @click="handleSave"
+          >
             保存到相册
           </up-button>
         </template>
@@ -67,7 +108,10 @@
     </view>
   </view>
   <up-picker
-    :show="showPicker" :columns="columns" key-name="label" @cancel="handlePickerCancel"
+    :show="showPicker"
+    :columns="columns"
+    key-name="label"
+    @cancel="handlePickerCancel"
     @confirm="handlePickerConfirm"
   />
 </template>
@@ -82,23 +126,25 @@ interface DefaultGenData {
   mixCount: number;
   count: number;
   type: 1;
-};
+  isInteger: boolean;
+}
 interface ColumnsData {
   label: string;
   value: QuestionType;
   title: string;
-};
+}
 
 interface QuestionData {
   title: string;
   list: Question[];
   mixCount?: number;
-};
+}
 
 const defaultGenData: DefaultGenData = {
   mixCount: 2,
   count: 100,
   type: 1,
+  isInteger: false,
 };
 
 const images = ref<string[]>([]);
@@ -154,7 +200,9 @@ const gen = () => {
   const titleHeight = 80;
   const questionHeight = (3508 - titleHeight) / vSplitCount;
 
-  const lists = questions.value.map(x => x.list.map((y: Question) => ({ ...y, mixCount: x.mixCount }))).flat();
+  const lists = questions.value
+    .map(x => x.list.map((y: Question) => ({ ...y, mixCount: x.mixCount })))
+    .flat();
 
   // 100题一页
   const chunkedLists = chunk(lists, 100);
@@ -167,7 +215,13 @@ const gen = () => {
   currentList.forEach((x: Question, i: number) => {
     const left = Math.floor(i / vSplitCount) * (2479 / 4) + 80;
     const top = titleHeight + (i % vSplitCount) * questionHeight;
-    const fontSize = x.mixCount && x.mixCount === 2 ? 90 : x.mixCount === 3 ? 70 : 50;
+    const fontSize
+      = !x.isInteger && x.mixCount && x.mixCount === 2
+        ? 90
+        : x.isInteger || x.mixCount === 3
+          ? 70
+          : 50;
+    console.log(fontSize, 'font-size');
     views.push({
       type: 'text',
       text: x.question,
@@ -217,13 +271,17 @@ const handleGen = () => {
 
   // 生成题目
   questions.value = groups.value.map((x: DefaultGenData) => {
-    const title = columns[0].find((c: ColumnsData) => c.value === x.type)!.title;
+    const title = columns[0].find(
+      (c: ColumnsData) => c.value === x.type,
+    )!.title;
     const list = genrateRandomMathQuestions({
       maxScore: maxScore.value,
       count: x.count,
       mixCount: x.mixCount,
       type: x.type,
+      isInteger: x.isInteger,
     });
+    console.log(list);
     return { title, list, mixCount: Number(x.mixCount) };
   });
   // 渲染题目
@@ -282,7 +340,9 @@ onMounted(() => {
       maxScore.value = Number(s);
     }
   }
-  catch (e) { console.log(e); }
+  catch (e) {
+    console.log(e);
+  }
 });
 
 onShareAppMessage(() => {
