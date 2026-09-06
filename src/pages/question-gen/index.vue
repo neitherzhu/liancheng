@@ -44,7 +44,7 @@
               </text>
             </template>
           </up-cell>
-          <up-cell v-if="![8, 9].includes(x.type)" title="运算位数">
+          <up-cell v-if="![8, 9, 10, 11].includes(x.type)" title="运算位数">
             <template #value>
               <up-input
                 v-model="x.mixCount"
@@ -118,7 +118,11 @@
 
 <script setup lang="ts">
 import type { Question, QuestionType } from '@/utils/biz/math';
-import { genrateRandomMathQuestions, isValidNumber } from '@/utils/biz/math';
+import {
+  genrateRandomMathQuestions,
+  isValidNumber,
+  TIMES_TABLE_MAX_COUNT,
+} from '@/utils/biz/math';
 import { chunk } from 'lodash';
 import storage from '@/utils/storage';
 
@@ -162,14 +166,16 @@ const columns = reactive<ColumnsData[][]>([
     { label: '1+1=', value: 1, title: '加减运算' },
     { label: '1x2=', value: 8, title: '乘法运算' },
     { label: '2÷2=', value: 9, title: '除法运算' },
-    { label: '( )+1=2', value: 2, title: '括号运算' },
-    { label: '1+( )=2', value: 3, title: '括号运算' },
+    { label: '( )+1=2', value: 2, title: '加减括号运算' },
+    { label: '( )x2=6', value: 10, title: '乘除括号运算' },
+    { label: '1+2x3=', value: 11, title: '混合运算' },
     { label: '1○1=2', value: 4, title: '填写合适的+、-' },
     { label: '1○1=2○0', value: 5, title: '填写合适的+、-' },
     { label: '最小能填几', value: 6, title: '最小能填几' },
     { label: '最大能填几', value: 7, title: '最大能填几' },
   ],
 ]);
+console.log('generate');
 
 const handleOpenPicker = (i: number) => {
   groupTargetIndex.value = i;
@@ -200,6 +206,7 @@ const gen = () => {
   const titleHeight = 80;
   const questionHeight = (3508 - titleHeight) / vSplitCount;
 
+  console.log('开始生成');
   const lists = questions.value
     .map(x => x.list.map((y: Question) => ({ ...y, mixCount: x.mixCount })))
     .flat();
@@ -260,6 +267,12 @@ const handleGen = () => {
     }
     else if (!isValidNumber(x.count)) {
       errorText = '请输入题目数量';
+    }
+    else if (
+      [8, 9].includes(x.type)
+      && Number(x.count) > TIMES_TABLE_MAX_COUNT
+    ) {
+      errorText = `3-9乘除法最多${TIMES_TABLE_MAX_COUNT}题`;
     }
     return !!errorText;
   });
